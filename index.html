@@ -115,13 +115,10 @@
   <section class="chapter">
     <div class="col">
       <p class="kicker">The doubt</p><div class="chapter-head"><span class="num latent" aria-hidden="true">3</span><h2>Does the answer depend on the latents?</h2></div>
-      <p>LanteRn, LVR, Monet and ILVR all score better when they think in latents, but a better score does not show that a model uses what it imagined.<br>So we asked all four one causal question: if we swap a model's latent thoughts for noise, zeros, or a crop from a different image, does its answer change?</p>
+      <p>To test whether four recent models actually use their latent thoughts, we swapped them for noise, zeros, or a crop from a different image and checked whether the answers change.</p>
     </div>
 
 
-    <div class="col">
-      <p class="turn">Across six models and three benchmarks, almost nothing happens.</p>
-    </div>
 
     <div class="wide chart" id="intervention-chart">
       <h3>Six models, three benchmarks, same picture</h3>
@@ -202,7 +199,7 @@
 
     <div class="col">
       <h3>Latent representation collapse</h3>
-      <p>The latent tokens produced at inference time deviate from their corresponding oracle representations, collapsing to a narrow region.<br>This prevents any benefit even when the model relies on them: on the rotation puzzles it scores 86% with the oracle latents, but only 33% with its own.</p>
+      <p>The latent tokens produced at inference time deviate from their corresponding oracle representations, collapsing to a narrow region, which prevents any benefit even when the model relies on them: on the rotation puzzles it scores 86% with the oracle latents, but only 33% with its own.</p>
     </div>
 
     <div class="wide lab" id="collapse-demo">
@@ -258,21 +255,21 @@
       <h2>Cite</h2>
 <div class="cites">
   <div class="cite"><div class="citehead"><b>LanteRn: Latent Visual Structured Reasoning</b><small>ICLR 2026 workshop</small><button type="button" class="copy">Copy</button></div><pre class="bibtex">@inproceedings{viveiros2026lantern,
-  title     = {LanteRn: Latent Visual Structured Reasoning},
-  author    = {Viveiros, Andr{\'e} G. and Gon{\c{c}}alves, Nuno and
-               Lindemann, Matthias and Martins, Andr{\'e} F. T.},
-  booktitle = {ICLR 2026 Workshop on Multimodal Intelligence},
-  year      = {2026},
-  eprint    = {2603.25629},
+  title         = {LanteRn: Latent Visual Structured Reasoning},
+  author        = {Viveiros, Andr{\'e} G. and Gon{\c{c}}alves, Nuno and
+                  Lindemann, Matthias and Martins, Andr{\'e} F. T.},
+  booktitle     = {ICLR 2026 Workshop on Multimodal Intelligence},
+  year          = {2026},
+  eprint        = {2603.25629},
   archivePrefix = {arXiv}
 }</pre></div>
   <div class="cite"><div class="citehead"><b>What's Holding Back Latent Visual Reasoning?</b><small>NeurIPS 2026</small><button type="button" class="copy">Copy</button></div><pre class="bibtex">@inproceedings{viveiros2026holding,
-  title     = {What's Holding Back Latent Visual Reasoning?},
-  author    = {Viveiros, Andr{\'e} G. and Gon{\c{c}}alves, Nuno and
-               Martins, Andr{\'e} F. T. and Lindemann, Matthias},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  year      = {2026},
-  eprint    = {2605.18445},
+  title         = {What's Holding Back Latent Visual Reasoning?},
+  author        = {Viveiros, Andr{\'e} G. and Gon{\c{c}}alves, Nuno and
+                  Martins, Andr{\'e} F. T. and Lindemann, Matthias},
+  booktitle     = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year          = {2026},
+  eprint        = {2605.18445},
   archivePrefix = {arXiv}
 }</pre></div>
 </div>
