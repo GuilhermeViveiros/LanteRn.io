@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LanteRn Project Page</title>
+<meta name="description" content="Two papers, one story: LanteRn, a method for latent visual reasoning in vision-language models, and a study of whether models actually use their latent tokens.">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Fraunces:opsz,wght@9..144,400..800&family=JetBrains+Mono:wght@400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="hero">
+  <img class="lamp" src="img/lantern-mark.png" width="107" height="256" alt="">
+  <h1>Latent visual reasoning<br>built and then put to the test</h1>
+  <p class="lede">We trained a vision-language model to think in latent space.<br>Then we checked whether it was using them. Two papers, one story.</p>
+  <p class="byline"><a class="lead-author" href="https://www.gviveiros.com/">André G. Viveiros</a>, Nuno Gonçalves, <a href="https://andre-martins.github.io/">André F. T. Martins</a>, <a href="https://namednil.github.io/">Matthias Lindemann</a></p>
+  <p class="affil">Instituto de Telecomunicações &nbsp;/&nbsp; Instituto Superior Técnico, Universidade de Lisboa &nbsp;/&nbsp; Gandara AI &nbsp;/&nbsp; Carnegie Mellon University</p>
+  <ul class="actions">
+    <li><a class="primary" href="https://arxiv.org/abs/2603.25629">LanteRn<small>ICLR 2026 workshop</small></a></li>
+    <li><a class="primary" href="https://arxiv.org/abs/2605.18445">Holding Back LVR<small>NeurIPS 2026</small></a></li>
+    <li><a href="https://github.com/GuilhermeViveiros/LanteRn"><span class="ico-line"><svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Code</span><small>GitHub</small></a></li>
+    <li><a href="https://huggingface.co/collections/AGViveiros/lantern-models"><span class="ico-line"><span class="hf" aria-hidden="true">🤗</span>Models</span><small>Hugging Face</small></a></li>
+    <li><a href="https://huggingface.co/collections/AGViveiros/lantern-data"><span class="ico-line"><span class="hf" aria-hidden="true">🤗</span>Data</span><small>Hugging Face</small></a></li>
+  </ul>
+</div>
+
+<main class="frame story">
+
+  <!-- 1 -->
+  <section class="chapter">
+    <div class="col">
+      <p class="kicker">The idea</p><div class="chapter-head"><span class="num" aria-hidden="true">1</span><h2>Let the model think in images, without drawing them</h2></div>
+      <p>Vision-language models look at an image once and then reason in words.<br>Latent visual reasoning gives them a second channel: in the middle of a thought, the model can emit a few continuous vectors that act as an abstract visual thought, and carry on.</p>
+    </div>
+
+    <div class="wide lab" id="gen-demo">
+      <div class="labhead">
+        <h3>Watch one answer being generated</h3>
+        <div class="controls">
+          <button type="button" class="go" data-act="play">Play</button>
+          <button type="button" data-act="step">Step</button>
+          <button type="button" data-act="reset">Reset</button>
+        </div>
+      </div>
+      <div class="stream">
+        <div class="row"><span class="rowlbl">Input</span>
+          <span class="chip">What is the bike in front of?</span>
+          <span class="chip img" title="image token"></span><span class="chip img" title="image token"></span><span class="chip img" title="image token"></span><span class="chip img" title="image token"></span><span class="chip img" title="image token"></span><span class="chip img" title="image token"></span>
+        </div>
+        <div class="row out" aria-live="off"><span class="rowlbl">Output</span></div>
+      </div>
+      <ul class="keyline genkey">
+        <li><i class="chip"></i>Text token</li>
+        <li><i class="chip img"></i>Image token</li>
+        <li><i class="chip mark"></i>Latent start / end token</li>
+        <li><i class="chip lat"></i>Latent token: a hidden state fed back in, never turned into a word</li>
+      </ul>
+      <div class="modeline" aria-live="polite"><span class="badge">Ready</span><span class="what">Press Play, or step through one token at a time.</span></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="chapter">
+    <div class="col">
+      <p class="kicker">The method</p><div class="chapter-head"><span class="num" aria-hidden="true">2</span><h2>LanteRn teaches this in two stages</h2></div>
+      <p><strong>Ground.</strong> Supervised fine-tuning pulls each latent towards the vision encoder's features for the image region the reasoning step is about.<br><strong>Reinforce.</strong> Reinforcement learning then rewards correct answers, so the latents are free to become whatever helps.</p>
+    </div>
+
+
+    <div class="wide lab" id="where-latents">
+      <h3>Where the latents come from</h3>
+      <div class="flow2">
+        <figure class="f2"><span class="n">1</span><div class="pic"><img src="img/flow-photo.png" width="304" height="201" alt="A dog running with a purple ring in its mouth; a box marks the ring."><i class="bbox"></i></div><figcaption><b>Pick the region</b>the box the reasoning step needs</figcaption></figure>
+        <span class="farrow" aria-hidden="true"></span>
+        <figure class="f2"><span class="n">2</span><div class="pic"><img src="img/flow-crop.png" width="342" height="276" alt="The cropped region: the ring in the dog's mouth."></div><figcaption><b>Crop it</b>the intermediate image</figcaption></figure>
+        <span class="farrow" aria-hidden="true"></span>
+        <figure class="f2"><span class="n">3</span><div class="pic patches" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><figcaption><b>Encode</b>patch features from the vision encoder</figcaption></figure>
+        <span class="farrow" aria-hidden="true"></span>
+        <figure class="f2"><span class="n">4</span><div class="pic pooled" aria-hidden="true"><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span></div><figcaption><b>Compress</b>into 8 latent vectors</figcaption></figure>
+        <div class="target2">
+          <div class="trow"><span class="toks"><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span></span><span><b>Oracle latents</b> the training targets</span></div>
+          <div class="mse2" aria-hidden="true"><span>MSE pulls these together</span></div>
+          <div class="trow"><span class="toks"><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span></span><span><b>Predicted latents</b> the model's own hidden states</span></div>
+        </div>
+      </div>
+      <p class="readline">In training, the model's latents are pulled towards the oracles. At inference there is no box and no oracle: the model has to write its latents on its own.</p>
+    </div>
+
+    <div class="wide lab" id="stage-demo">
+      <h3>What each stage buys</h3>
+      <p class="sub">Accuracy of a 3B model against its starting point and against a text-only model trained the same way.</p>
+      <div class="controls">
+        <button type="button" data-stage="sft" aria-pressed="false">After supervised fine-tuning</button>
+        <button type="button" data-stage="rl" aria-pressed="true">After reinforcement learning</button>
+      </div>
+      <div class="bargroups"></div>
+      <ul class="keyline">
+        <li><i style="background:#c9cbdc"></i>Qwen2.5-VL-3B</li>
+        <li><i style="background:var(--tok-text);outline:1.5px solid var(--tok-text-edge)"></i>Text-only baseline</li>
+        <li><i style="background:var(--tok-latent);outline:1.5px dotted var(--tok-latent-edge)"></i>LanteRn, 8 latent tokens</li>
+      </ul>
+      <p class="readline" aria-live="polite"></p>
+    </div>
+
+    <div class="col">
+      <p><a href="https://arxiv.org/abs/2603.25629">How LanteRn works, in full</a></p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="chapter">
+    <div class="col">
+      <p class="kicker">The doubt</p><div class="chapter-head"><span class="num latent" aria-hidden="true">3</span><h2>Does the answer depend on the latents?</h2></div>
+      <p>LanteRn, LVR, Monet and ILVR all score better when they think in latents, but a better score does not show that a model uses what it imagined.<br>So we asked all four one causal question: if we swap a model's latent thoughts for noise, zeros, or a crop from a different image, does its answer change?</p>
+    </div>
+
+
+    <div class="col">
+      <p class="turn">Across six models and three benchmarks, almost nothing happens.</p>
+    </div>
+
+    <div class="wide chart" id="intervention-chart">
+      <h3>Six models, three benchmarks, same picture</h3>
+      <p class="sub">The vertical bar is standard inference. Each mark is the same model with its latent tokens replaced.</p>
+      <ul class="tabs" aria-label="Benchmark">
+        <li><button type="button" data-bench="viscot" aria-pressed="true">VisCoT</button></li>
+        <li><button type="button" data-bench="blink" aria-pressed="false">BLINK</button></li>
+        <li><button type="button" data-bench="vstar" aria-pressed="false">V*Bench</button></li>
+      </ul>
+      <ul class="legend" aria-label="Replacement to highlight">
+        <li><span class="static"><svg viewBox="0 0 16 16" aria-hidden="true"><line x1="8" y1="1" x2="8" y2="15" stroke="#1a1d3a" stroke-width="3.5" stroke-linecap="round"/></svg>Standard inference</span></li>
+        <li><button type="button" data-series="rs" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="#f2a77b" stroke="#a14e1e" stroke-width="1.5"/></svg>Random subregion</button></li>
+        <li><button type="button" data-series="noise" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="#4a3fc4"/></svg>Noise</button></li>
+        <li><button type="button" data-series="zeros" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="#fff" stroke="#1a1d3a" stroke-width="2"/></svg>Zeros</button></li>
+        <li><button type="button" data-series="skip" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3L13 13M3 13L13 3" stroke="#555a78" stroke-width="2.6" stroke-linecap="round"/></svg>Skip latents</button></li>
+        <li><button type="button" data-series="oracle" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="2" fill="#3f9b2f"/></svg>Oracle latents</button></li>
+      </ul>
+      <svg class="plot" role="img" aria-label="Accuracy under interventions on the latent tokens."></svg>
+      <p class="readout" aria-live="polite"></p>
+      <noscript><p>This chart needs JavaScript. <a href="https://arxiv.org/abs/2605.18445">The paper</a> has the same numbers as tables.</p></noscript>
+    </div>
+
+    <div class="col">
+      <div class="finding"><p><strong>Latent bypass.</strong> Off-the-shelf latent visual reasoning models bypass latent tokens, which have little to no causal effect on the model's final answer.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="chapter">
+    <div class="col">
+      <p class="kicker">The diagnosis</p><div class="chapter-head"><span class="num latent" aria-hidden="true">4</span><h2>Two things are holding it back</h2></div>
+      <h3>Latent bypass problem</h3>
+      <p>In most existing datasets, oracle latent tokens provide limited additional information beyond the original image and do not substantially simplify the task. Models learn to ignore them during training and bypass them at inference. On a dataset where the latents do carry the answer, models rely on them.</p>
+    </div>
+
+    <div class="wide lab" id="regime-view">
+      <h3>What the latents contain decides whether the model reads them</h3>
+      <p class="sub">LanteRn retrained in three settings. The number is the gap between the right latents and the best useless replacement (noise, zeros or an unrelated image).</p>
+      <div class="regimes">
+        <div class="regime-card">
+          <h4>A crop of the input</h4>
+          <img src="img/regime-crop.png" width="760" height="173" alt="A photo of a dog with a red box around the ring in its mouth; the latent block encodes that cropped region.">
+          <p class="d">The usual setup. The latents show part of an image the model can already see.</p>
+          <p class="gap gap-none">−1 pt</p>
+          <ul class="bars">
+            <li><span>Oracle latents</span><span class="track"><span class="fill oracle" style="width:79%"></span></span><span class="val">79%</span></li>
+            <li><span>Best replacement</span><span class="track"><span class="fill " style="width:80%"></span></span><span class="val">80%</span></li>
+            <li><span>Pause-token model</span><span class="track"><span class="fill pause" style="width:79%"></span></span><span class="val">79%</span></li>
+          </ul>
+        </div>
+        <div class="regime-card">
+          <h4>The only view of a masked region</h4>
+          <img src="img/regime-masked.png" width="760" height="135" alt="A photo with the bird blacked out; the unmasked crop of the bird is injected as the latent block.">
+          <p class="d">The region that matters is blacked out in the input and kept only in the latents.</p>
+          <p class="gap gap-mid">+14 pts</p>
+          <ul class="bars">
+            <li><span>Oracle latents</span><span class="track"><span class="fill oracle" style="width:75%"></span></span><span class="val">75%</span></li>
+            <li><span>Best replacement</span><span class="track"><span class="fill " style="width:61%"></span></span><span class="val">61%</span></li>
+            <li><span>Pause-token model</span><span class="track"><span class="fill pause" style="width:59%"></span></span><span class="val">59%</span></li>
+          </ul>
+        </div>
+        <div class="regime-card key">
+          <span class="keytag">Here the model relies on its latents</span>
+          <h4>A rotation the model must imagine</h4>
+          <img src="img/regime-tetris.png" width="760" height="319" alt="A Tetris-like rotation puzzle with four candidate answers, and the intermediate image showing the shape rotated 90 degrees to the right.">
+          <p class="d">Tetris-like puzzles. The latents show the rotated shape, which is not in the input.</p>
+          <p class="gap gap-big">+56 pts</p>
+          <ul class="bars">
+            <li><span>Oracle latents</span><span class="track"><span class="fill oracle" style="width:86%"></span><span class="chance" style="left:25%" title="chance: 25%"></span></span><span class="val">86%</span></li>
+            <li><span>Best replacement</span><span class="track"><span class="fill " style="width:30%"></span><span class="chance" style="left:25%" title="chance: 25%"></span></span><span class="val">30%</span></li>
+            <li><span>Pause-token model</span><span class="track"><span class="fill pause" style="width:34%"></span><span class="chance" style="left:25%" title="chance: 25%"></span></span><span class="val">34%</span></li>
+            <li><span>Its own latents</span><span class="track"><span class="fill own" style="width:33%"></span><span class="chance" style="left:25%" title="chance: 25%"></span></span><span class="val">33%</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="readline">On Tetris the dashed line is chance (25%). The model reads the right latents well, but its own latents score only 33%: it cannot write what it has learned to read.</p>
+    </div>
+
+    <div class="col">
+      <h3>Latent representation collapse</h3>
+      <p>The latent tokens produced at inference time deviate from their corresponding oracle representations, collapsing to a narrow region.<br>This prevents any benefit even when the model relies on them: on the rotation puzzles it scores 86% with the oracle latents, but only 33% with its own.</p>
+    </div>
+
+    <div class="wide lab" id="collapse-demo">
+      <div class="labhead">
+        <h3>Predicted latents huddle together</h3>
+        <div class="controls models" role="group" aria-label="Model"></div>
+      </div>
+      <p class="sub">Each dot is one sample's latent; the tighter the cloud, the more alike the latents (average cosine similarity on VisCoT, dot positions illustrative).</p>
+      <div class="clouds3">
+        <div class="ctile"><span class="k">Retrieval@10</span><b class="r10"></b><span>of predictions find their own target among the 10 nearest oracles</span><small>random guessing: 3.3%</small></div>
+        <svg class="cl" viewBox="0 0 260 300" role="img" aria-label="Oracle latents"></svg>
+        <svg class="cl" viewBox="0 0 260 300" role="img" aria-label="Predicted latents"></svg>
+        <div class="ctile"><span class="k">USP</span><b class="usp"></b><span>of the time a prediction is closer to another sample's prediction than to its own target</span><small>random guessing: 50%</small></div>
+      </div>
+      <p class="readline" aria-live="polite"></p>
+      <p class="more">Method, the per-step similarity curves and the Tetris results are in <a href="https://arxiv.org/abs/2605.18445">Section 5 of the paper</a>.</p>
+    </div>
+
+    <div class="col">
+      <div class="finding"><p><strong>Latent representation collapse.</strong> Predicted latent tokens collapse to highly similar representations that are relatively dissimilar to their oracle tokens.</p></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="chapter">
+    <div class="col">
+      <p class="kicker">What comes next</p><div class="chapter-head"><span class="num" aria-hidden="true">5</span><h2>What latent visual reasoning needs</h2></div>
+      <p>Each finding points to one fix. The first two are open research problems; the third is something every paper can do today.</p>
+    </div>
+    <ul class="wide next">
+      <li>
+        <span class="toks" aria-hidden="true"><span class="tok m"></span><span class="tok o"></span><span class="tok o"></span><span class="tok o"></span><span class="tok m"></span></span>
+        <em>Latent bypass</em>
+        <b>Datasets with steps worth reading</b>
+        <span>Intermediate images should hold what the input does not: rotations, folds, future states.<br>A pause-token baseline tells you whether they do.</span>
+      </li>
+      <li>
+        <span class="toks" aria-hidden="true"><span class="tok m"></span><span class="tok z"></span><span class="tok z"></span><span class="tok z"></span><span class="tok m"></span></span>
+        <em>Latent collapse</em>
+        <b>More precise latent prediction</b>
+        <span>A model that relies on its latents needs good ones at inference.<br>Watch the similarity among predictions, and between predictions and oracles.</span>
+      </li>
+      <li>
+        <span class="toks" aria-hidden="true"><span class="tok m"></span><span class="tok noise"></span><span class="tok zero">0</span><span class="tok other"></span><span class="tok m"></span></span>
+        <em>For every new model</em>
+        <b>Test for bypass</b>
+        <span>Swap the latents for dummies and report what happens, as part of every evaluation.</span>
+      </li>
+    </ul>
+    <div class="col">
+      <p style="margin-top:1.6rem"><a href="https://arxiv.org/abs/2605.18445">What's holding latent visual reasoning back, in full</a></p>
+
+      <h2>Cite</h2>
+<div class="cites">
+  <div class="cite"><div class="citehead"><b>LanteRn: Latent Visual Structured Reasoning</b><small>ICLR 2026 workshop</small><button type="button" class="copy">Copy</button></div><pre class="bibtex">@inproceedings{viveiros2026lantern,
+  title     = {LanteRn: Latent Visual Structured Reasoning},
+  author    = {Viveiros, Andr{\'e} G. and Gon{\c{c}}alves, Nuno and
+               Lindemann, Matthias and Martins, Andr{\'e} F. T.},
+  booktitle = {ICLR 2026 Workshop on Multimodal Intelligence},
+  year      = {2026},
+  eprint    = {2603.25629},
+  archivePrefix = {arXiv}
+}</pre></div>
+  <div class="cite"><div class="citehead"><b>What's Holding Back Latent Visual Reasoning?</b><small>NeurIPS 2026</small><button type="button" class="copy">Copy</button></div><pre class="bibtex">@inproceedings{viveiros2026holding,
+  title     = {What's Holding Back Latent Visual Reasoning?},
+  author    = {Viveiros, Andr{\'e} G. and Gon{\c{c}}alves, Nuno and
+               Martins, Andr{\'e} F. T. and Lindemann, Matthias},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2026},
+  eprint    = {2605.18445},
+  archivePrefix = {arXiv}
+}</pre></div>
+</div>
+    </div>
+  </section>
+
+</main>
+
+<script src="chart.js"></script>
+<script src="story.js"></script>
+
+</body>
+</html>
