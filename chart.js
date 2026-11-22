@@ -7,12 +7,13 @@
   "use strict";
 
   var MODELS = [
-    { name: "ILVR", sub: "7B, SFT" },
-    { name: "LVR", sub: "7B, RL" },
-    { name: "LanteRn", sub: "3B, RL" },
-    { name: "LanteRn", sub: "3B, SFT" },
-    { name: "Monet", sub: "7B, RL" },
-    { name: "Monet", sub: "7B, SFT" }
+    // checkpoints as listed in the paper's appendix ("Model Checkpoints")
+    { name: "ILVR", sub: "7B, SFT", ckpt: "https://huggingface.co/shuai22/comt_ckpt" },
+    { name: "LVR", sub: "7B, RL", ckpt: "https://huggingface.co/vincentleebang/LVR-7B" },
+    { name: "LanteRn", sub: "3B, RL", ckpt: "https://huggingface.co/AGViveiros/LanteRn-3B-RL" },
+    { name: "LanteRn", sub: "3B, SFT", ckpt: "https://huggingface.co/AGViveiros/LanteRn-3B-SFT" },
+    { name: "Monet", sub: "7B, RL", ckpt: "https://huggingface.co/NOVAglow646/Monet-7B" },
+    { name: "Monet", sub: "7B, SFT", ckpt: "https://huggingface.co/NOVAglow646/Monet-SFT-7B/tree/main/stage3" }
   ];
 
   var DATA = {
@@ -54,7 +55,7 @@
   };
 
   var C = {
-    ink: "#1a1d3a", soft: "#555a78", rule: "#d9dbea", band: "#f1f1f9",
+    ink: "#1a1d3a", link: "#3b32a8", soft: "#555a78", rule: "#d9dbea", band: "#f1f1f9",
     amber: "#f2a77b", amberEdge: "#a14e1e", indigo: "#4a3fc4", green: "#3f9b2f"
   };
 
@@ -83,6 +84,14 @@
     if (key === "zeros") return el("circle", { cx: x, cy: y, r: 5, fill: "#fff", stroke: C.ink, "stroke-width": 2 });
     if (key === "oracle") return el("rect", { x: x - 5.5, y: y - 5.5, width: 11, height: 11, rx: 2, fill: C.green, stroke: "#fff", "stroke-width": 1 });
     return el("path", { d: "M" + (x - 5) + " " + (y - 5) + "L" + (x + 5) + " " + (y + 5) + "M" + (x - 5) + " " + (y + 5) + "L" + (x + 5) + " " + (y - 5), stroke: C.soft, "stroke-width": 2.4, "stroke-linecap": "round", fill: "none" });
+  }
+
+  // model name opens its checkpoint on Hugging Face
+  function link(m, node) {
+    var a = el("a", { href: m.ckpt, target: "_blank", rel: "noopener" });
+    a.setAttribute("aria-label", m.name + " " + m.sub + " checkpoint on Hugging Face");
+    a.appendChild(el("title", {}, m.name + " " + m.sub + ": open the checkpoint on Hugging Face"));
+    a.appendChild(node); return a;
   }
 
   function signed(n) { return (n > 0 ? "+" : n < 0 ? "−" : "±") + Math.abs(n); }
@@ -120,13 +129,13 @@
       var lanesTop = y0 + labelH + pad + 4;
 
       if (narrow) {
-        var t = el("text", { x: left, y: y0 + 17, "font-size": 13, fill: C.ink, "font-weight": 650 }, m.name);
+        var t = el("text", { x: left, y: y0 + 17, "font-size": 13, fill: C.link, "font-weight": 650, "text-decoration": "underline" }, m.name);
         t.appendChild(el("tspan", { "font-weight": 400, fill: C.soft }, "  " + m.sub));
-        plot.appendChild(t);
+        plot.appendChild(link(m, t));
         plot.appendChild(el("text", { x: W - 8, y: y0 + 17, "text-anchor": "end", "font-size": 12, fill: C.soft }, "best replacement " + signed(delta)));
       } else {
         var mid = y0 + rowH / 2;
-        plot.appendChild(el("text", { x: 10, y: mid - 2, "font-size": 14, fill: C.ink, "font-weight": 650 }, m.name));
+        plot.appendChild(link(m, el("text", { x: 10, y: mid - 2, "font-size": 14, fill: C.link, "font-weight": 650, "text-decoration": "underline" }, m.name)));
         plot.appendChild(el("text", { x: 10, y: mid + 14, "font-size": 12, fill: C.soft }, m.sub));
         plot.appendChild(el("text", { x: W - 8, y: mid - 2, "text-anchor": "end", "font-size": 12, fill: C.soft }, "best replacement"));
         plot.appendChild(el("text", { x: W - 8, y: mid + 14, "text-anchor": "end", "font-size": 14, fill: C.ink, "font-weight": 650 }, signed(delta) + " pts"));
